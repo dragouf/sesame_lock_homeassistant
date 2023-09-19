@@ -24,7 +24,7 @@ class SesameLock(LockEntity):
         self._device = device
         self._device.subscribeMechStatus(self._update_callback)
         self._is_locked = status.isInLockRange()
-        self._battery_level = status.getBatteryPercentage()
+        self._battery_level = int(status.getBatteryPercentage().strip('%'))
 
     @property
     def name(self):
@@ -44,10 +44,17 @@ class SesameLock(LockEntity):
     @property
     def device_state_attributes(self):
         """Return device specific state attributes."""
+        attrs = super().device_state_attributes or {}
+        attrs[ATTR_BATTERY_LEVEL] = self._battery_level
+        return attrs
+    
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return device specific state attributes."""
         return {
-            ATTR_BATTERY_LEVEL: self._battery_level
+            ATTR_BATTERY_LEVEL: self._battery,
         }
-
+    
     async def async_lock(self, **kwargs):
         """Lock the device."""
         await self.hass.async_add_executor_job(self._device.lock, APPLICATION_NAME)
@@ -63,5 +70,5 @@ class SesameLock(LockEntity):
     def _update_callback(self, device, status):
         """Handle device updates."""
         self._is_locked = status.isInLockRange()
-        self._battery_level = status.getBatteryPercentage()
+        self._battery_level = int(status.getBatteryPercentage().strip('%'))
         self.async_schedule_update_ha_state()
