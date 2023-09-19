@@ -53,7 +53,7 @@ class SesameLock(LockEntity):
     def extra_state_attributes(self) -> dict[str, Any]:
         """Return device specific state attributes."""
         return {
-            ATTR_BATTERY_LEVEL: self._battery,
+            ATTR_BATTERY_LEVEL: self._battery_level,
         }
     
     async def async_lock(self, **kwargs):
