@@ -1,0 +1,11 @@
+{
+  "domain": "sesame_lock",
+  "name": "Sesame Smart Lock 3/4/5",
+  "codeowners": [],
+  "documentation": "https://www.home-assistant.io/integrations/sesame",
+  "iot_class": "cloud_polling",
+  "integration_type": "device",
+  "loggers": ["sesame_lock"],
+  "requirements": ["pysesame3[cognito]", "awscrt", "awsiot"],
+  "version": "0.1.0"
+}
