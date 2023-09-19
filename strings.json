@@ -1,0 +1,24 @@
+{
+    "config": {
+      "step": {
+        "user": {
+            "title": "Connect to Sesame Lock",
+            "description": "Please enter your credentials.",
+            "data": {            
+                "api_key": "API Key",
+                "device_uuid": "Device UUID",
+                "client_secret": "Client Secret"
+            }
+        }
+      },
+      "error": {
+        "unknown": "Unknown error",
+        "invalid_auth": "Invalid authentication"
+      },
+      "abort": {
+        "already_configured": "Device is already configured"
+      }
+    },
+    "title": "SesameLock"
+  }
+  
