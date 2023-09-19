@@ -2,6 +2,7 @@ from homeassistant.components.lock import LockEntity
 from homeassistant.const import ATTR_BATTERY_LEVEL, APPLICATION_NAME
 from pysesame3.auth import CognitoAuth
 from pysesame3.chsesame2 import CHSesame2
+from typing import Any
 
 CONF_API_KEY = "api_key"
 CONF_UUID = "device_uuid"
@@ -24,7 +25,7 @@ class SesameLock(LockEntity):
         self._device = device
         self._device.subscribeMechStatus(self._update_callback)
         self._is_locked = status.isInLockRange()
-        self._battery_level = int(status.getBatteryPercentage().strip('%'))
+        self._battery_level = int(str(status.getBatteryPercentage()).strip('%'))
 
     @property
     def name(self):
@@ -70,5 +71,5 @@ class SesameLock(LockEntity):
     def _update_callback(self, device, status):
         """Handle device updates."""
         self._is_locked = status.isInLockRange()
-        self._battery_level = int(status.getBatteryPercentage().strip('%'))
+        self._battery_level = int(str(status.getBatteryPercentage()).strip('%'))
         self.async_schedule_update_ha_state()
