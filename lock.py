@@ -2,6 +2,7 @@ from homeassistant.components.lock import LockEntity
 from homeassistant.const import ATTR_BATTERY_LEVEL, APPLICATION_NAME
 from pysesame3.auth import CognitoAuth
 from pysesame3.chsesame2 import CHSesame2
+from pysesame3.helper import CHProductModel, CHSesame2MechStatus
 from typing import Any
 
 CONF_API_KEY = "api_key"
@@ -21,11 +22,21 @@ async def async_setup_entry(hass, entry, async_add_entities):
 class SesameLock(LockEntity):
     def __init__(self, device):
         """Initialize the lock."""
+
         status = device.mechStatus
         self._device = device
-        self._device.subscribeMechStatus(self._update_callback)
+     
         self._is_locked = status.isInLockRange()
         self._battery_level = int(str(status.getBatteryPercentage()).strip('%'))
+
+        self._device_id = device.deviceId
+        self._device_model = device.productModel
+        self._battery_voltage = status.getBatteryVoltage(),
+        self._position = status.getPosition()
+        self._is_in_lock_range = status.isInLockRange()
+        self._is_in_unlock_range = status.isInUnlockRange()
+
+        self._device.subscribeMechStatus(self._update_callback)
 
     @property
     def name(self):
@@ -54,6 +65,12 @@ class SesameLock(LockEntity):
         """Return device specific state attributes."""
         return {
             ATTR_BATTERY_LEVEL: self._battery_level,
+            'device_uuid': self._device_id,
+            'device_model': self._device_model,
+            'battery_voltage': self._battery_voltage,
+            'position': self._position,
+            'is_in_lock_range': self._is_in_lock_range,
+            '_is_in_unlock_range': self._is_in_unlock_range,
         }
     
     async def async_lock(self, **kwargs):
@@ -68,8 +85,16 @@ class SesameLock(LockEntity):
         self._is_locked = False
         self.async_schedule_update_ha_state()
 
-    def _update_callback(self, device, status):
+    def _update_callback(self, device: CHSesame2, status: CHSesame2MechStatus):
         """Handle device updates."""
         self._is_locked = status.isInLockRange()
         self._battery_level = int(str(status.getBatteryPercentage()).strip('%'))
+
+        self._device_id = device.deviceId
+        self._device_model = device.productModel
+        self._battery_voltage = status.getBatteryVoltage(),
+        self._position = status.getPosition()
+        self._is_in_lock_range = status.isInLockRange()
+        self._is_in_unlock_range = status.isInUnlockRange()
+
         self.async_schedule_update_ha_state()
