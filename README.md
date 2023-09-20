@@ -1,5 +1,5 @@
 # sesame_lock_homeassistant
-a code assistant custom component for sesame lock 5 using webapi
+a code assistant custom component for sesame lock 3/4/5 using webapi
 
 ---
 title: Sesame Smart Lock
